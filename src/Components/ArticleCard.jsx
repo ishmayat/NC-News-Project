@@ -11,7 +11,14 @@ const ArticleCard = ({ article }) => {
       <Link to={`/articles/${article.topic}`}>
         <h5>{article.topic}</h5>
       </Link>
-      <Link to={`/article/${article.article_id}`}></Link>
+      <div className="buttons-container">
+        <Link to={`/article/${article.article_id}`}>
+          <span>💙{article.votes}</span>
+        </Link>
+        <Link to={`/article/${article.article_id}`}>
+          <span>💬{article.comment_count}</span>
+        </Link>
+      </div>
     </section>
   );
 };
