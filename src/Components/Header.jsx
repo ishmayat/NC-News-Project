@@ -1,25 +1,12 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import React from "react";
-import { getArticles } from "../api";
+import { useState, useEffect } from "react";
 
 const Header = () => {
   const [error, setError] = useState("");
   const [date, setDate] = useState(new Date());
 
   useEffect(() => {
-    getArticles()
-      .then((response) => {
-        if (response && response.data) {
-          setTopics(response.data);
-        } else {
-          setError("Error: Invalid response data");
-        }
-      })
-      .catch((err) => {
-        setError(err.response.data);
-      });
-
     const intervalId = setInterval(() => {
       setDate(new Date());
     }, 1000);
@@ -59,8 +46,11 @@ const Header = () => {
             <Link to="/users">
               <button>Users</button>
             </Link>
-            <Link to="/articles">
+            <Link to="/">
               <button>All Articles</button>
+            </Link>
+            <Link to="/topics">
+              <button>Topics</button>
             </Link>
           </nav>
         </div>

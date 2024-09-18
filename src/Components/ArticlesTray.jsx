@@ -38,28 +38,6 @@ const ArticlesTray = ({ articles }) => {
 
   return (
     <>
-      <div className="header">
-        <img
-          src="src/assets/NCNews-logo-white.png"
-          alt="NC News Logo"
-          className="logo-main"
-        />
-        <p>
-          {currentDate.toLocaleDateString("en-GB", {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-        </p>
-        <div className="buttons-container">
-          {" "}
-          <button>Home</button>
-          <button>Users</button>
-          <button>Topic</button>
-          <button>All Articles</button>
-        </div>
-      </div>
       {topic ? <h4>{`"${topicDescription}"`}</h4> : <p></p>}
       <div className="articles-grid">
         {articles.map((article) => (

@@ -10,8 +10,14 @@ export const getArticles = (query = "") => {
   });
 };
 
-export const getArticle = (query = "") => {
-  return ncNewsApi.get(`/articles${query}`).then((response) => {
-    return response.data.article;
-  });
+export const getArticleById = (id) => {
+  return ncNewsApi
+    .get(`/articles/${id}`)
+    .then((response) => {
+      return response.data.article;
+    })
+    .catch((error) => {
+      console.error("Error fetching article:", error);
+      throw error;
+    });
 };

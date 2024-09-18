@@ -1,28 +1,31 @@
-import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getArticle } from "../api";
+import { useParams } from "react-router-dom";
+import { getArticleById } from "../api";
+import React from "react";
+import Header from "./Header";
+import { Link } from "react-router-dom";
 
-const ArticlePage = (anyUser) => {
+const ArticlePage = () => {
   const { article_id } = useParams();
-  const query = `/${article_id}`;
-  const [article, setArticle] = useState([{}]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [article, setArticle] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     setIsLoading(true);
-    getArticle(query)
+    getArticleById(article_id)
       .then((response) => {
         setArticle(response);
         setIsLoading(false);
       })
       .catch((err) => {
-        setError(err.response.data);
-        setIsLoading(false);
+        setError("Error: Invalid response data");
       });
-  }, [query]);
+  }, [article_id]);
 
-  if (isLoading) return <h3>Article is loading...</h3>;
+  if (isLoading) return <h3>Loading article...</h3>;
+
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="article-single">
@@ -33,6 +36,10 @@ const ArticlePage = (anyUser) => {
         <h4>Created at: {article.created_at}</h4>
         <img src={article.article_img_url} alt={`${article.title}`} />
         <p>{article.body}</p>
+        <span className="votes-count-single">
+          💙{article.votes}
+          💬{article.comment_count}
+        </span>
       </div>
     </div>
   );
