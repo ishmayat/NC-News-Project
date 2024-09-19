@@ -99,9 +99,27 @@
   border: solid white;
   margin-bottom: 10px;
   margin-top: -250px;
-  display: flex;
+  display: fixed;
 }
 
 .votes-count-single {
-  border: solid red;
+  border: solid dark grey;
+}
+
+.comment-card {
+  margin-right: 10px;
+}
+
+.comments-section {
+  border: solid white;
+  position: absolute;
+  margin-top: 10px;
+  margin-right: 32px;
+  margin-left: -3px;
+}
+
+.comments-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

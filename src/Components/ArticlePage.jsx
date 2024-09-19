@@ -1,21 +1,28 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getArticleById } from "../api";
+import { getArticleById, getCommentsByArticleId } from "../api";
 import React from "react";
 import Header from "./Header";
-import { Link } from "react-router-dom";
+import CommentCard from "./CommentCard";
 
 const ArticlePage = () => {
   const { article_id } = useParams();
   const [article, setArticle] = useState(null);
+  const [comments, setComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     setIsLoading(true);
-    getArticleById(article_id)
-      .then((response) => {
-        setArticle(response);
+    Promise.all([
+      getArticleById(article_id),
+      getCommentsByArticleId(article_id),
+    ])
+      .then(([articleResponse, commentsResponse]) => {
+        setArticle(articleResponse);
+        setComments(commentsResponse);
+        console.log("Article:", articleResponse);
+        console.log("Comments:", commentsResponse);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -41,6 +48,16 @@ const ArticlePage = () => {
           💬{article.comment_count}
         </span>
       </div>
+      {comments.length > 0 && (
+        <section className="comments-section">
+          <h2 className="comments-text">Comments ({comments.length})</h2>
+          <ul className="comment-list">
+            {comments.map((comment) => (
+              <CommentCard key={comment.id} comment={comment} />
+            ))}
+          </ul>
+        </section>
+      )}
     </div>
   );
 };
