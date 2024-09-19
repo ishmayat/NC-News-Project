@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getArticleById, getCommentsByArticleId } from "../api";
+import { getArticleById, getCommentsByArticleId, voteOnArticle } from "../api";
 import React from "react";
 import Header from "./Header";
 import CommentCard from "./CommentCard";
@@ -11,6 +11,7 @@ const ArticlePage = () => {
   const [comments, setComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [localVotes, setLocalVotes] = useState(0);
 
   useEffect(() => {
     setIsLoading(true);
@@ -21,14 +22,33 @@ const ArticlePage = () => {
       .then(([articleResponse, commentsResponse]) => {
         setArticle(articleResponse);
         setComments(commentsResponse);
-        console.log("Article:", articleResponse);
-        console.log("Comments:", commentsResponse);
         setIsLoading(false);
       })
       .catch((err) => {
         setError("Error: Invalid response data");
       });
   }, [article_id]);
+
+  const handleVote = (value) => {
+    setLocalVotes(localVotes + value);
+
+    voteOnArticle(article_id, value)
+      .then((response) => {
+        console.log("Vote updated successfully:", response);
+        // Re-fetch the article to display the updated vote count
+        getArticleById(article_id)
+          .then((updatedArticle) => {
+            setArticle(updatedArticle);
+          })
+          .catch((error) => {
+            console.error("Error fetching updated article:", error);
+          });
+      })
+      .catch((error) => {
+        setLocalVotes(localVotes - value);
+        alert("An error occurred while updating your vote.");
+      });
+  };
 
   if (isLoading) return <h3>Loading article...</h3>;
 
@@ -44,8 +64,10 @@ const ArticlePage = () => {
         <img src={article.article_img_url} alt={`${article.title}`} />
         <p>{article.body}</p>
         <span className="votes-count-single">
-          💙{article.votes}
-          💬{article.comment_count}
+          <button onClick={() => handleVote(1)}>Like</button>
+          <button onClick={() => handleVote(-1)}>DisLike</button>
+          {localVotes}
+          {article.comment_count}
         </span>
       </div>
       {comments.length > 0 && (
@@ -57,6 +79,12 @@ const ArticlePage = () => {
             ))}
           </ul>
         </section>
+      )}
+      {/* Handle the case of no comments */}
+      {comments.length === 0 && (
+        <p className="no-comments">
+          There are no comments for this article yet.
+        </p>
       )}
     </div>
   );
