@@ -21,3 +21,14 @@ export const getArticleById = (id) => {
       throw error;
     });
 };
+
+export const getCommentsByArticleId = (id) => {
+  return ncNewsApi.get(`/articles/${id}/comments`).then((response) => {
+    const comments = response.data.comments.map((comment) => {
+      console.log(response.data, "<-----response comment");
+      //comment.created_at = formatDate(comment.created_at);
+      return comment;
+    });
+    return comments;
+  });
+};
