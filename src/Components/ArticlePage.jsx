@@ -4,14 +4,20 @@ import { getArticleById, getCommentsByArticleId, voteOnArticle } from "../api";
 import React from "react";
 import Header from "./Header";
 import CommentCard from "./CommentCard";
+import CommentForm from "./CommentForm";
+import UserContext from "./Users/UserContext";
 
 const ArticlePage = () => {
+  const [user, setUser] = useState({
+    username: "tickle122",
+  });
   const { article_id } = useParams();
   const [article, setArticle] = useState(null);
   const [comments, setComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [localVotes, setLocalVotes] = useState(0);
+  const [newCommentIsSubmitting, setNewCommentIsSubmitting] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
@@ -63,10 +69,14 @@ const ArticlePage = () => {
         <h4>Created at: {article.created_at}</h4>
         <img src={article.article_img_url} alt={`${article.title}`} />
         <p>{article.body}</p>
+        <span className="vote-in-article">💙{article.votes}</span>
         <span className="votes-count-single">
-          <button onClick={() => handleVote(1)}>Like</button>
-          <button onClick={() => handleVote(-1)}>DisLike</button>
-          {localVotes}
+          <button className="like-button" onClick={() => handleVote(1)}>
+            Like
+          </button>
+          <button className="dislike-button" onClick={() => handleVote(-1)}>
+            DisLike
+          </button>
           {article.comment_count}
         </span>
       </div>
@@ -75,7 +85,7 @@ const ArticlePage = () => {
           <h2 className="comments-text">Comments ({comments.length})</h2>
           <ul className="comment-list">
             {comments.map((comment) => (
-              <CommentCard key={comment.id} comment={comment} />
+              <CommentCard key={comment.comment_id} comment={comment} />
             ))}
           </ul>
         </section>
@@ -86,6 +96,17 @@ const ArticlePage = () => {
           There are no comments for this article yet.
         </p>
       )}
+      <UserContext.Provider value={{ user, setUser }}>
+        <CommentForm
+          article_id={article_id}
+          setComments={setComments}
+          setNewCommentIsSubmitting={setNewCommentIsSubmitting}
+          currentCommentCount={article.comment_count}
+          setUpdateCommentCount={(newCount) =>
+            setComments([...comments, newCount])
+          }
+        />
+      </UserContext.Provider>
     </div>
   );
 };

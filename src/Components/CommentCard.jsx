@@ -8,7 +8,6 @@ const CommentCard = ({ comment }) => (
     </div>
     <p className="comment-text">{comment.body}</p>
     <p className="comment-votes">Votes: {comment.votes}</p>
-    {/*voting buttons here later-task 7 */}
   </li>
 );
 
