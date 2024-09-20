@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getArticleById, getCommentsByArticleId, voteOnArticle } from "../api";
+import {
+  getArticleById,
+  getCommentsByArticleId,
+  voteOnArticle,
+  deleteCommentById,
+} from "../api";
 import React from "react";
 import Header from "./Header";
 import CommentCard from "./CommentCard";
@@ -56,6 +61,27 @@ const ArticlePage = () => {
       });
   };
 
+  const handleDeleteComment = (commentId) => {
+    // Optimistic update (remove comment from UI immediately)
+    setComments(comments.filter((comment) => comment.comment_id !== commentId));
+
+    deleteCommentById(commentId) // Send delete request to backend
+      .then((response) => {
+        console.log("Comment deleted successfully:", response);
+        // Handle successful deletion on the server-side
+      })
+      .catch((error) => {
+        // Revert optimistic update and display error message if deletion fails
+        setComments(
+          comments.concat(comments.find((c) => c.comment_id === commentId))
+        ); // Add comment back to state
+        console.error("Error deleting comment:", error);
+        alert(
+          "An error occurred while deleting the comment. Please try again later."
+        );
+      });
+  };
+
   if (isLoading) return <h3>Loading article...</h3>;
 
   if (error) return <p>Error: {error}</p>;
@@ -85,7 +111,12 @@ const ArticlePage = () => {
           <h2 className="comments-text">Comments ({comments.length})</h2>
           <ul className="comment-list">
             {comments.map((comment) => (
-              <CommentCard key={comment.comment_id} comment={comment} />
+              <CommentCard
+                key={comment.comment_id}
+                comment={comment}
+                currentUser={user} // CommentCard uses currentUser to check if it's the user's comment
+                onDeleteComment={handleDeleteComment} // Pass delete function
+              />
             ))}
           </ul>
         </section>
