@@ -63,3 +63,19 @@ export const postComments = (article_id, newComment) => {
       throw error;
     });
 };
+
+export const deleteCommentById = (commentId) => {
+  return ncNewsApi
+    .delete(`/comments/${commentId}`)
+    .then((response) => {
+      if (!response) throw new Error("Failed to delete comment");
+      console.log("Comment deleted successfully:", response.data);
+      return response.data; //
+    })
+    .catch((error) => {
+      console.error("Error deleting comment:", error);
+      throw error;
+    });
+};
+
+export default ncNewsApi;
