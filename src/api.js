@@ -47,3 +47,14 @@ export const voteOnArticle = (id, value) => {
       throw error;
     });
 };
+
+export const postComments = (article_id, { body: commentBody }) => {
+  return ncNewsApi
+    .post(`/articles/${article_id}/comments`, {
+      body: commentBody,
+    })
+    .then((response) => {
+      if (!response) throw new Error("Failed to post comment");
+      return response.data.postedComment;
+    });
+};
