@@ -4,10 +4,15 @@ import React from "react";
 
 const CommentForm = ({
   article_id,
+  setNewComment,
   setNewCommentIsSubmitting,
   currentCommentCount,
   setUpdateCommentCount,
 }) => {
+  const hardcodedUser = {
+    username: "tickle122",
+  };
+
   const [commentBody, setCommentBody] = useState("");
   const [error, setError] = useState(false);
   const [errors, setErrors] = useState("");
@@ -22,13 +27,14 @@ const CommentForm = ({
 
     const newComment = {
       body: commentBody,
-      // Added a temporary identifier (using Date.now())
-      id: Date.now(), //  unique identifier for optimistic rendering
+      username: hardcodedUser.username,
+      id: Date.now(),
     };
     setNewCommentIsSubmitting(true);
 
     postComments(article_id, newComment)
       .then((response) => {
+        setNewComment(response.data);
         setCommentBody("");
         setNewCommentIsSubmitting(false);
         setError(false);
@@ -37,7 +43,7 @@ const CommentForm = ({
       })
       .catch((err) => {
         setError(true);
-        setErrors(err.response.data);
+        //setErrors(err.response.data);
 
         setUpdateCommentCount(currentCommentCount - 1);
       });
@@ -60,7 +66,9 @@ const CommentForm = ({
           </label>
           {noEmptyCommentBody ? (
             <div>
-              <h5>You cannot post an empty comment. Please write something!</h5>
+              <h5 className="empty-comment-text">
+                You cannot post an empty comment. Please write something!
+              </h5>
             </div>
           ) : null}
           {error ? (

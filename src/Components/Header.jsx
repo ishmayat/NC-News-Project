@@ -1,8 +1,16 @@
 import { Link } from "react-router-dom";
 import React from "react";
 import { useState, useEffect } from "react";
+import { useContext } from "react";
+import UserContext from "./Users/UserContext";
 
 const Header = () => {
+  const { user } = useContext(UserContext);
+
+  const handleLogin = () => {
+    console.log("User logged in:", user);
+  };
+
   const [error, setError] = useState("");
   const [date, setDate] = useState(new Date());
 
@@ -44,7 +52,7 @@ const Header = () => {
               <button>Home</button>
             </Link>
             <Link to="/users">
-              <button>Users</button>
+              <button onClick={handleLogin}>Users</button>
             </Link>
             <Link to="/">
               <button>All Articles</button>

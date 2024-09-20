@@ -136,8 +136,27 @@
   width: 100%;
   height: 100%;
   gap: 20px;
+  margin-right: 60px;
 }
 
 .textbox {
-  width: 500px;
+  width: 450px;
+}
+
+.empty-comment-text {
+  border: solid red;
+  color: red;
+}
+.vote-in-article {
+  margin-right: 10px;
+  font-size: 20px;
+}
+
+.like-button {
+  border: solid 1px white;
+  margin-right: 5px;
+}
+
+.dislike-button {
+  border: solid 1px white;
 }

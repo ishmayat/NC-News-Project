@@ -48,13 +48,18 @@ export const voteOnArticle = (id, value) => {
     });
 };
 
-export const postComments = (article_id, { body: commentBody }) => {
+export const postComments = (article_id, newComment) => {
   return ncNewsApi
     .post(`/articles/${article_id}/comments`, {
-      body: commentBody,
+      body: newComment.body,
+      username: newComment.username || "tickle122",
     })
     .then((response) => {
       if (!response) throw new Error("Failed to post comment");
       return response.data.postedComment;
+    })
+    .catch((error) => {
+      console.error("Error posting comment:", error);
+      throw error;
     });
 };
